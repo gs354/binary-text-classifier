@@ -2,6 +2,7 @@
 import re
 import string
 import pandas as pd
+import html
 
 # Scikit-Learn
 from sklearn.feature_extraction.text import CountVectorizer
@@ -18,6 +19,29 @@ from spellchecker import SpellChecker
 
 # Assign the list of NLTK stopwords to a constant
 STOPWORDS = stopwords.words("english")
+
+
+def unescape_html(
+    data: pd.Series | list[str],
+) -> list[str]:
+    """Convert all named and numeric character references (e.g. &gt;, &#62;, &#x3e;)
+    in the string to the corresponding Unicode characters.
+
+    Parameters
+    ----------
+    data : pd.Series | list[str]
+        Text data
+
+    Returns
+    -------
+    list[str]
+        Text data with html unescaped.
+    """
+    processed_text = []
+    for text in data:
+        text = html.unescape(text)
+        processed_text.append(text)
+    return processed_text
 
 
 def get_top_n_words(
